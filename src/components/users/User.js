@@ -1,10 +1,13 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import { Spinner } from '../layout/Spinner';
 import Repos from '../Repos/Repos';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import GithubContext from '../../context/github/githubContext';
 
-const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
+const User = ({ match }) => {
+  const githubContext = useContext(GithubContext);
+  const { loading, user, getUser, getUserRepos } = githubContext;
+
   useEffect(() => {
     // get param value and pass it in getUser
     getUser(match.params.login);
@@ -25,7 +28,7 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
     public_repos,
     public_gists,
     hireable,
-    company
+    company,
   } = user;
 
   if (loading) return Spinner;
@@ -35,7 +38,7 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
       <Link to='/' className='btn btn-light'>
         Back To Search
       </Link>
-      Hireable: {' '}
+      Hireable:{' '}
       {hireable ? (
         <i className='fas fa-check text-success' />
       ) : (
@@ -48,7 +51,7 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
             className='round-img'
             alt=''
             style={{
-              width : '150px'
+              width: '150px',
             }}
           />
           <h1>{name}</h1>
@@ -98,17 +101,9 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
         <div className='badge badge-light'>Public Repos: {public_repos}</div>
         <div className='badge badge-dark'>Public Gists: {public_gists}</div>
       </div>
-      <Repos repos={repos} />
+      <Repos />
     </Fragment>
   );
-};
-
-User.propTypes = {
-  loading      : PropTypes.bool,
-  user         : PropTypes.object.isRequired,
-  getUser      : PropTypes.func.isRequired,
-  getUserRepos : PropTypes.func.isRequired,
-  repos        : PropTypes.array.isRequired
 };
 
 export default User;
